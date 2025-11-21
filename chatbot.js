@@ -753,7 +753,7 @@ class ChatManager {
             headers['X-API-Key'] = this.config.config.apiKey;
         }
 
-        const response = await fetch('https://rfp-bot.pages.dev/n8n/', {
+        const response = await fetch('https://rfp-bot.pages.dev/n8n/route/', {
             method: 'POST',
             headers: headers,
             body: JSON.stringify(payload)
