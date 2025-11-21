@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RFP Assistant Chat 2</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Main Container -->
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-brain"></i>
+                    <h2>RFP Assistant</h2>
+                </div>
+                <button class="sidebar-toggle" id="sidebarToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+
+            <div class="sidebar-content">
+                <!-- New Chat Button -->
+                <button class="new-chat-btn" id="newChatBtn">
+                    <i class="fas fa-plus"></i>
+                    <span>New Chat</span>
+                </button>
+
+                <!-- Chat History -->
+                <div class="chat-history">
+                    <h3>Recent Conversations</h3>
+                    <div class="history-list" id="historyList">
+                        <!-- Chat history items will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Sidebar Footer -->
+                <div class="sidebar-footer">
+                    <button class="config-btn" id="configBtn">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </button>
+                    <button class="help-btn" id="helpBtn">
+                        <i class="fas fa-question-circle"></i>
+                        <span>Help</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <div class="top-bar-left">
+                    <button class="sidebar-toggle-btn" id="sidebarToggleBtn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1 class="chat-title" id="chatTitle">AI Assistant</h1>
+                </div>
+                <div class="top-bar-right">
+                    <div class="status-indicator">
+                        <span class="status-dot online"></span>
+                        <span class="status-text">Online</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Area -->
+            <div class="chat-area">
+                <!-- Welcome Screen -->
+                <div class="welcome-screen" id="welcomeScreen">
+                    <div class="welcome-content">
+                        <div class="welcome-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <h2>Welcome to RFP Assistant</h2>
+                        <p>Start a conversation with your AI assistant. Ask questions, explore ideas, or get help with any topic.</p>
+                        
+                        <!-- Suggested Prompts -->
+                        <div class="suggested-prompts">
+                            <h3>Try these prompts:</h3>
+                            <div class="prompt-grid">
+                                <button class="prompt-card" data-prompt="Explain quantum computing in simple terms">
+                                    <i class="fas fa-atom"></i>
+                                    <span>Explain quantum computing</span>
+                                </button>
+                                <button class="prompt-card" data-prompt="Write a creative story about time travel">
+                                    <i class="fas fa-pen-fancy"></i>
+                                    <span>Write a creative story</span>
+                                </button>
+                                <button class="prompt-card" data-prompt="Help me plan a productive daily routine">
+                                    <i class="fas fa-clock"></i>
+                                    <span>Plan a daily routine</span>
+                                </button>
+                                <button class="prompt-card" data-prompt="Explain the latest developments in AI">
+                                    <i class="fas fa-brain"></i>
+                                    <span>AI developments</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Messages Container -->
+                <div class="messages-container" id="messagesContainer" style="display: none;">
+                    <div class="messages-wrapper">
+                        <div class="messages-list" id="messagesList">
+                            <!-- Messages will be populated here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Typing Indicator -->
+                <div class="typing-indicator-container" id="typingIndicatorContainer" style="display: none;">
+                    <div class="typing-indicator-wrapper">
+                        <div class="typing-avatar">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="typing-text">
+                            <div class="typing-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <span class="typing-label">AI is thinking...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <div class="input-area">
+                <div class="input-container">
+                    <div class="input-wrapper">
+                        <textarea 
+                            id="messageInput" 
+                            placeholder="Type your message... (Shift + Enter for new line)" 
+                            rows="1"
+                            maxlength="4000"
+                        ></textarea>
+                        <div class="input-actions">
+                            <button class="attach-btn" id="attachBtn" title="Attach file">
+                                <i class="fas fa-paperclip"></i>
+                            </button>
+                            <button class="send-btn" id="sendBtn" disabled title="Send message">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="input-footer">
+                        <span class="char-count" id="charCount">0/4000</span>
+                        <span class="input-hint">Press Enter to send, Shift+Enter for new line</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Configuration Modal -->
+    <div class="modal-overlay" id="configModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3>Settings & Configuration</h3>
+                <button class="modal-close" id="closeConfigModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-content">
+                <div class="config-section">
+                    <h4>N8N Integration</h4>
+                    <div class="form-group">
+                        <label for="n8nWebhookUrl">Webhook URL:</label>
+                        <input type="url" id="n8nWebhookUrl" placeholder="https://your-n8n-instance.com/webhook/chatbot">
+                        <span class="form-help">Enter your N8N webhook URL to enable intelligent responses</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="apiKey">API Key (Optional):</label>
+                        <input type="password" id="apiKey" placeholder="Your API authentication key">
+                        <span class="form-help">API key for webhook authentication (if required)</span>
+                    </div>
+                </div>
+
+                <div class="config-section">
+                    <h4>Personalization</h4>
+                    <div class="form-group">
+                        <label for="botName">Assistant Name:</label>
+                        <input type="text" id="botName" placeholder="AI Assistant" value="AI Assistant">
+                    </div>
+                    <div class="form-group">
+                        <label for="welcomeMessage">Welcome Message:</label>
+                        <textarea id="welcomeMessage" rows="3">Hello! I'm your AI assistant. How can I help you today?</textarea>
+                    </div>
+                </div>
+
+                <div class="config-section">
+                    <h4>RFP Agent Configuration</h4>
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="rfpAgentEnabled" checked>
+                            <span class="checkmark"></span>
+                            Enable RFP Agent mode
+                        </label>
+                        <span class="form-help">Specialized mode for RFP analysis and proposal development</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="analysisDepth">Analysis Depth:</label>
+                        <select id="analysisDepth">
+                            <option value="basic">Basic</option>
+                            <option value="detailed" selected>Detailed</option>
+                            <option value="comprehensive">Comprehensive</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="includeCompetitiveAnalysis" checked>
+                            <span class="checkmark"></span>
+                            Include competitive analysis
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="includeRiskAssessment" checked>
+                            <span class="checkmark"></span>
+                            Include risk assessment
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="generateTimeline" checked>
+                            <span class="checkmark"></span>
+                            Generate project timelines
+                        </label>
+                    </div>
+                </div>
+
+                <div class="config-section">
+                    <h4>Prompt Cards Settings</h4>
+                    <div class="form-group">
+                        <span class="form-help">Configure the suggested prompts shown on the welcome screen</span>
+                    </div>
+                    <div class="prompt-cards-config" id="promptCardsConfig">
+                        <!-- Prompt cards will be dynamically populated -->
+                    </div>
+                    <button type="button" class="btn-secondary" id="addPromptCard">
+                        <i class="fas fa-plus"></i> Add New Prompt Card
+                    </button>
+                </div>
+
+                <div class="config-section">
+                    <h4>Interface</h4>
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="darkMode">
+                            <span class="checkmark"></span>
+                            Dark mode (coming soon)
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="soundEnabled" checked>
+                            <span class="checkmark"></span>
+                            Sound notifications
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="cancelConfig">Cancel</button>
+                <button class="btn-primary" id="saveConfig">Save Settings</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div class="modal-overlay" id="helpModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3>Help & Documentation</h3>
+                <button class="modal-close" id="closeHelpModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-content">
+                <div class="help-section">
+                    <h4>Getting Started</h4>
+                    <ul>
+                        <li>Type your message in the input area and press Enter</li>
+                        <li>Use Shift+Enter to create new lines in your message</li>
+                        <li>Click suggested prompts to get started quickly</li>
+                        <li>Previous conversations are saved in the sidebar</li>
+                    </ul>
+                </div>
+                
+                <div class="help-section">
+                    <h4>N8N Integration</h4>
+                    <ul>
+                        <li>Configure your N8N webhook URL in Settings</li>
+                        <li>Create a workflow that responds to POST requests</li>
+                        <li>Return responses in JSON format with a "message" field</li>
+                        <li>See the README.md for detailed setup instructions</li>
+                    </ul>
+                </div>
+
+                <div class="help-section">
+                    <h4>Keyboard Shortcuts</h4>
+                    <ul>
+                        <li><kbd>Enter</kbd> - Send message</li>
+                        <li><kbd>Shift + Enter</kbd> - New line</li>
+                        <li><kbd>Ctrl/Cmd + /</kbd> - Show help</li>
+                        <li><kbd>Ctrl/Cmd + ,</kbd> - Open settings</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-primary" id="closeHelp">Got it</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fullscreen Content Viewer Modal -->
+    <div class="fullscreen-modal" id="fullscreenModal">
+        <div class="fullscreen-content" id="fullscreenContent">
+            <div class="fullscreen-header" id="fullscreenHeader">
+                <div class="content-type-indicator" id="fullscreenTypeIndicator">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Document Viewer</span>
+                </div>
+                <button class="fullscreen-close" id="fullscreenClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="fullscreen-body" id="fullscreenBody">
+                <!-- Content will be dynamically inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="chatbot.js"></script>
+</body>
+</html>
